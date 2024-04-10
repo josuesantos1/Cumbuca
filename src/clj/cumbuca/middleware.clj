@@ -1,7 +1,6 @@
 (ns cumbuca.middleware
   (:require
     [cumbuca.env :refer [defaults]]
-    [cumbuca.config :refer [env]]
     [ring-ttl-session.core :refer [ttl-memory-store]]
     [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
     [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
@@ -10,7 +9,7 @@
     [buddy.auth.backends.session :refer [session-backend]])
   )
 
-(defn on-error [request response]
+(defn on-error [request _response]
   {:status 403
    :headers {}
    :body (str "Access to " (:uri request) " is not authorized")})

@@ -8,7 +8,7 @@
     [reitit.ring.middleware.multipart :as multipart]
     [reitit.ring.middleware.parameters :as parameters]
     [cumbuca.middleware.formats :as formats]
-    [ring.util.http-response :refer :all]
+    [ring.util.http-response :refer [ok]]
     [clojure.java.io :as io]))
 
 (defn service-routes []

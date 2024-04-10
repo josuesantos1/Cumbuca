@@ -1,11 +1,11 @@
 (ns cumbuca.handler-test
-  (:require
-    [clojure.test :refer :all]
-    [ring.mock.request :refer :all]
-    [cumbuca.handler :refer :all]
-    [cumbuca.middleware.formats :as formats]
-    [muuntaja.core :as m]
-    [mount.core :as mount]))
+  (:require [clojure.test :refer [deftest is testing use-fixtures]]
+            [cumbuca.config]
+            [cumbuca.handler :refer [app]]
+            [cumbuca.middleware.formats :as formats]
+            [mount.core :as mount]
+            [muuntaja.core :as m]
+            [ring.mock.request :refer [body request json-body content-type header]]))
 
 (defn parse-json [body]
   (m/decode formats/instance "application/json" body))

@@ -1,9 +1,7 @@
 (ns cumbuca.db.core
   (:require
-    [datomic.api :as d]
-    [io.rkn.conformity :as c]
-    [mount.core :refer [defstate]]
-    [cumbuca.config :refer [env]]))
+   [datomic.api :as d]
+   [io.rkn.conformity :as c]))
 
 (defn install-schema
   "This function expected to be called at system start up.
