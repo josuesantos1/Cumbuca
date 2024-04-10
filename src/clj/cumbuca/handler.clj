@@ -1,13 +1,14 @@
 (ns cumbuca.handler
-  (:require
-    [cumbuca.middleware :as middleware]
-    [cumbuca.routes.services :refer [service-routes]]
-    [reitit.swagger-ui :as swagger-ui]
-    [reitit.ring :as ring]
-    [ring.middleware.content-type :refer [wrap-content-type]]
-    [ring.middleware.webjars :refer [wrap-webjars]]
-    [cumbuca.env :refer [defaults]]
-    [mount.core :as mount]))
+  (:require [cumbuca.config :refer [env]]
+            [cumbuca.db.core]
+            [cumbuca.env :refer [defaults]]
+            [cumbuca.middleware :as middleware]
+            [cumbuca.routes.services :refer [service-routes]]
+            [datomic.api :as d]
+            [mount.core :as mount]
+            [reitit.ring :as ring]
+            [ring.middleware.content-type :refer [wrap-content-type]]
+            [ring.middleware.webjars :refer [wrap-webjars]]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
@@ -17,6 +18,10 @@
   ([_] nil)
   ([_ respond _] (respond nil)))
 
+(mount/defstate conn
+  :start (do (-> env :database-url d/create-database)
+             (-> env :database-url d/connect))
+  :stop (-> conn .release))
 
 (mount/defstate app-routes
   :start

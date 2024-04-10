@@ -5,10 +5,6 @@
     [mount.core :refer [defstate]]
     [cumbuca.config :refer [env]]))
 
-(defstate conn
-  :start (do (-> env :database-url d/create-database) (-> env :database-url d/connect))
-  :stop (-> conn .release))
-
 (defn install-schema
   "This function expected to be called at system start up.
 
@@ -47,7 +43,7 @@
                     :screen-name \"AAA\"
                     :status :user.status/active
                     :email \"aaa@example.com\" })"
-  [conn {:keys [id screen-name status email]}]
+  [conn {:keys [id screen-name status email]}] 
   @(d/transact conn [{:user/id         id
                       :user/name       screen-name
                       :user/status     status
@@ -63,12 +59,11 @@
     (:user/first-name (find-one-by (d/db conn) :user/email \"user@example.com\"))
     => show first-name field"
   [db attr val]
-  (d/entity db
-            ;;find Specifications using ':find ?a .' will return single scalar
-            (d/q '[:find ?e .
-                   :in $ ?attr ?val
-                   :where [?e ?attr ?val]]
-                 db attr val)))
+  (-> (d/q '[:find (pull ?e [*])
+             :in $ ?attr ?val
+             :where [?e ?attr ?val]]
+           db attr val)
+      ffirst))
 
 
 (defn find-user [db id]
